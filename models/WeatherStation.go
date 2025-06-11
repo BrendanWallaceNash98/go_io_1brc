@@ -16,6 +16,17 @@ type WeatherStations struct {
 	WeatherStationsNameSorted []string
 }
 
+func IntialiseWeatherStation() WeatherStations {
+	wsMap := make(map[string]WeatherStation)
+	var wsSlice []string
+	WeatherStationsObj := WeatherStations{
+		WeatherStationsMap:        wsMap,
+		WeatherStationsNameSorted: wsSlice,
+	}
+
+	return WeatherStationsObj
+}
+
 func (ws *WeatherStation) InitialiseWeatherStation(name string, temp float64) {
 	ws.Name = name
 	ws.Min = temp
@@ -46,12 +57,12 @@ func (ws *WeatherStation) CalAverageTemp() {
 func insertSortNameList(names []string, newName string) []string {
 	pos := sort.SearchStrings(names, newName)
 
-	names = append(names[:pos], append([]string{newName}, names[:pos]...)...)
+	names = append(names[:pos], append([]string{newName}, names[pos:]...)...)
 
 	return names
 }
 
-func (wso WeatherStations) AddWeatherStation(name string, tmp float64) {
+func (wso *WeatherStations) AddWeatherStation(name string, tmp float64) {
 	val, exists := wso.WeatherStationsMap[name]
 	if exists {
 		val.AddNewValue(tmp)
