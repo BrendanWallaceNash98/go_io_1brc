@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/BrendanWallaceNash98/golang-1brc-io/logger"
-	"github.com/BrendanWallaceNash98/golang-1brc-io/models"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/BrendanWallaceNash98/golang-1brc-io/logger"
+	"github.com/BrendanWallaceNash98/golang-1brc-io/models"
 )
 
 func main() {
@@ -50,7 +51,7 @@ func main() {
 	}()
 
 	for _, weatherStation := range wso.WeatherStationsNameSorted {
-        station := wso.WeatherStationsMap[weatherStation]
+		station := wso.WeatherStationsMap[weatherStation]
 		station.CalAverageTemp()
 		stationText := fmt.Sprintf("%s=%v/%v/%v\n", station.Name, station.Min, station.Avg, station.Max)
 		if _, err := outPutFile.WriteString(stationText); err != nil {
