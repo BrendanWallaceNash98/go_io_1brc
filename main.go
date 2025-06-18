@@ -76,10 +76,18 @@ func main() {
 			logger.LogError(err)
 		}
 	}(file)
+
 	scanner := bufio.NewScanner(file)
 	wso := models.IntialiseWeatherStation()
+    
+    type result struct {
+        stationName string,
+        temp float64
+    }
 
-	var mu sync.Mutex
+    resultChannel := make(chan result, 10000)
+
+    var mu sync.Mutex
 	lineCount := 0
 	var wg sync.WaitGroup
 
