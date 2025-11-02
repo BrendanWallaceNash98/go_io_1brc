@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -23,7 +24,6 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	wso := models.IntialiseWeatherStation()
 
-	lineCount := 0
 	for scanner.Scan() {
 		line := scanner.Text()
 
@@ -37,10 +37,6 @@ func main() {
 		logger.LogError(err)
 		wso.AddWeatherStation(stationName, temp)
 
-		lineCount++
-		if lineCount%10000000 == 0 {
-			fmt.Printf("Processed %d lines\n\n", lineCount)
-		}
 	}
 	outPutFile, err := os.Create("/Users/brendanwallace-nash/OneBillionRowChallenge/data/output.txt")
 	logger.LogError(err)
@@ -50,7 +46,9 @@ func main() {
 		}
 	}()
 
-	for _, weatherStation := range wso.WeatherStationsNameSorted {
+	sort.Strings(wso.WeatherStationsName)
+
+	for _, weatherStation := range wso.WeatherStationsName {
 		station := wso.WeatherStationsMap[weatherStation]
 		station.CalAverageTemp()
 		stationText := fmt.Sprintf("%s=%v/%v/%v\n", station.Name, station.Min, station.Avg, station.Max)
