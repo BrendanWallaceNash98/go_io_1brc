@@ -1,5 +1,10 @@
 package models
 
+import (
+	"fmt"
+	"math"
+)
+
 type WeatherStation struct {
 	Name  string
 	Min   float64
@@ -25,6 +30,16 @@ func IntialiseWeatherStation() WeatherStations {
 	return WeatherStationsObj
 }
 
+func (ws *WeatherStations) AddCalculatedWeatherStation(w WeatherStation) error {
+	if _, exists := ws.WeatherStationsMap[w.Name]; exists {
+		return fmt.Errorf("weatherstation already exists, cannot add to map")
+	}
+	ws.WeatherStationsMap[w.Name] = &w
+	ws.WeatherStationsName = append(ws.WeatherStationsName, w.Name)
+
+	return nil
+}
+
 func (ws *WeatherStation) InitialiseWeatherStation(name string, temp float64) {
 	ws.Name = name
 	ws.Min = temp
@@ -48,8 +63,25 @@ func (ws *WeatherStation) AddNewValue(temp float64) {
 	}
 }
 
+func (wso *WeatherStation) MergeStations(_wso *WeatherStation) error {
+	if wso.Name != _wso.Name {
+		return fmt.Errorf("not the same weatherstation, should not merge")
+	}
+	wso.Count += _wso.Count
+	wso.Sum += _wso.Sum
+	if wso.Min > _wso.Min {
+		wso.Min = _wso.Min
+	}
+	if wso.Max < _wso.Max {
+		wso.Max = _wso.Max
+	}
+	return nil
+}
+
 func (ws *WeatherStation) CalAverageTemp() {
-	ws.Avg = ws.Sum / float64(ws.Count)
+	avg := ws.Sum / float64(ws.Count)
+	ratio := math.Pow(10, 1.0)
+	ws.Avg = math.Round(avg*ratio) / ratio
 }
 
 func (wso *WeatherStations) AddWeatherStation(name string, tmp float64) {
