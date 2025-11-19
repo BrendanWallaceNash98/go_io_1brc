@@ -22,8 +22,7 @@ func ProccessLine(line []byte) (string, float64) {
 		return ``, 0
 	}
 	stationName := lineStr[:semiColonPos]
-	tempStr := lineStr[semiColonPos+1 : len(lineStr)-1]
-	temp, err := strconv.ParseFloat(tempStr, 64)
+	temp, err := strconv.ParseFloat(lineStr[semiColonPos+1:len(lineStr)-1], 64)
 	if err != nil {
 		logger.LogError(err)
 		return ``, 0
@@ -130,8 +129,7 @@ func main() {
 	for _, weatherStation := range finalWeatherStations.WeatherStationsName {
 		station := finalWeatherStations.WeatherStationsMap[weatherStation]
 		station.CalAverageTemp()
-		stationText := fmt.Sprintf("%s=%v/%v/%v\n", station.Name, station.Min, station.Avg, station.Max)
-		if _, err := outPutFile.WriteString(stationText); err != nil {
+		if _, err := outPutFile.WriteString(fmt.Sprintf("%s=%v/%v/%v\n", station.Name, station.Min, station.Avg, station.Max)); err != nil {
 			logger.LogError(err)
 		}
 	}
